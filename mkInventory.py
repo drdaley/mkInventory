@@ -1,7 +1,7 @@
 import pprint
 import cirpy as cr
 import os
-
+import mkInvDefs
 # if os.path.isfile('output.csv'):
 # 	output = open('output.csv','w')
 # elif not os.path.isfile('output.csv')
@@ -11,16 +11,18 @@ import os
 #output = open('output.csv','w')
 again = ''
 line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','location':''}
-phaseOptions = ['solid','liquid','solution','gas']
-unitsOptions = ['kg','g','mg','L','mL','lbs']
-locations = list()
+phaseOptions = mkInvDefs.phaseOptions
+unitsOptions = mkInvDefs.unitsOptions
+locations = mkInvDefs.locations
 newHeader = os.path.isfile('output.csv')
-print(newHeader)
+#print(newHeader)
 if newHeader==False:
+	print('Creating output.csv')
 	a = open('output.csv','x')
+	titleString = str()
 	a.write('name|CAS|amount|units|comments|phase|location\n')
 	a.close()
-else:pass
+else:print('Output.csv exists, appending to existing file.')
 
 with open('output.csv','a') as output:
 	while again != 'n':
@@ -28,21 +30,25 @@ with open('output.csv','a') as output:
 		CAS = input('CAS number: ')
 		#print(CAS)
 		line['CAS'] = CAS
-		try:
-			nameList = cr.resolve(CAS,'names')
-			if len(nameList) == 1:
-				line['name'] = nameList
-			elif len(nameList) > 1:
-				for i,name in enumerate(nameList):
-					print(str(i)+') '+name)
-				nameIndex = input('Use which name? ')
-				line['name'] = nameList[int(nameIndex)]
-
-		except:
-			print('The CAS number could not be resolved.')
-			print('This is somewhat common.')
+		if CAS == '':
 			res = input('Enter the chemical name manually: ')
 			line['name'] = res
+		else:
+			try:
+				nameList = cr.resolve(CAS,'names')
+				if len(nameList) == 1:
+					line['name'] = nameList
+				elif len(nameList) > 1:
+					for i,name in enumerate(nameList):
+						print(str(i)+') '+name)
+					nameIndex = input('Use which name? ')
+					line['name'] = nameList[int(nameIndex)]
+
+			except:
+				print('The CAS number could not be resolved.')
+				print('This is somewhat common.')
+				res = input('Enter the chemical name manually: ')
+				line['name'] = res
 		try:
 
 
@@ -58,13 +64,18 @@ with open('output.csv','a') as output:
 			line['phase'] = phaseOptions[int(p)]
 			# print('Error in phase entry.')
 			# Unit block
-			line['amount'] = input('Amount? ')
+			print('Amount: Only enter the value of the amount, not the units.')
+			line['amount'] = input('Amount?  ')
 			print('====================')
 			for i,units in enumerate(unitsOptions):
 				print(str(i)+') '+units)
 			print('====================')
+			print('For units: number to specify an item on the list, or type new unit name.)')
 			p = input('What are the units? ')
-			line['units'] = unitsOptions[int(p)]
+			if p.isdigit(): line['units'] = unitsOptions[int(p)]
+			elif p.isalpha():
+				 line['units'] = p
+				 unitsOptions.append(p)
 			# print('Error in units entry.')
 			if len(locations) > 0:
 				print('====================')
