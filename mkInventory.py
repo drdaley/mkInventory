@@ -14,6 +14,7 @@ line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','loca
 phaseOptions = mkInvDefs.phaseOptions
 unitsOptions = mkInvDefs.unitsOptions
 locations = mkInvDefs.locations
+comments = mkInvDefs.comments
 newHeader = os.path.isfile('output.csv')
 #print(newHeader)
 if newHeader==False:
@@ -26,6 +27,7 @@ else:print('Output.csv exists, appending to existing file.')
 
 with open('output.csv','a') as output:
 	while again != 'n':
+		line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','location':''}
 		# input CAS
 		CAS = input('CAS number: ')
 		#print(CAS)
@@ -89,12 +91,26 @@ with open('output.csv','a') as output:
 			lInp = input('Where is the chemical located? ')
 			if lInp.isdigit():
 				if int(lInp) in list(range(len(locations))):
+					#print(locations[int(lInp)])
 					line['location'] = locations[int(lInp)]
 				else:print('LOCATION NAMES MUST CONTAIN NON-NUMERIC CHARACTERS')
 			else:
 				line['location'] = lInp
 				locations.append(lInp)
-			line['comments'] = input('Any comments? ')
+			if len(comments) > 0:
+				for i,c in enumerate(comments):
+					print(str(i)+') '+c)
+			else: pass
+			print('====================')
+			comm = input('Any comments? ')
+			if comm.isdigit():
+				if len(comments) > 0:
+					if int(comm) in list(range(len(comments))):
+						line['comments'] = comments[int(comm)]
+					else:print("COMMENTS MUST CONTAIN NON-NUMERIC CHARACTERS")
+			else:
+				line['comments'] = comm
+				comments.append(comm)
 			formattedLine = line['name']+'|'+line['CAS']+'|'+line['amount']+'|'+line['units']+'|'+line['comments']+'|'+line['phase']+'|'+line['location']+'\n'
 			output.write(formattedLine)
 			print(formattedLine)
