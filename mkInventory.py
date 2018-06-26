@@ -2,30 +2,28 @@ import pprint
 import cirpy as cr
 import os
 import mkInvDefs
-# if os.path.isfile('output.csv'):
-# 	output = open('output.csv','w')
-# elif not os.path.isfile('output.csv')
-# 	output = open('output.csv','x')
-# 	output.write('name|CAS|amount|units|comments|phase|location\n')
+import datetime as dt
 
-#output = open('output.csv','w')
 again = ''
 line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','location':''}
 phaseOptions = mkInvDefs.phaseOptions
 unitsOptions = mkInvDefs.unitsOptions
 locations = mkInvDefs.locations
 comments = mkInvDefs.comments
-newHeader = os.path.isfile('output.csv')
+today = dt.datetime.today()
+timestamp = today.strftime('%Y-%m-%d_%H%M')
+fileName = 'output{0}.csv'.format(timestamp)
+newHeader = os.path.isfile(fileName)
 #print(newHeader)
 if newHeader==False:
-	print('Creating output.csv')
-	a = open('output.csv','x')
+	print('Creating {0}'.format(fileName))
+	a = open(fileName,'x')
 	titleString = str()
 	a.write('name|CAS|amount|units|comments|phase|location\n')
 	a.close()
-else:print('Output.csv exists, appending to existing file.')
+else:print('{0} exists, appending to existing file.'.format(fileName))
 
-with open('output.csv','a') as output:
+with open(fileName,'a') as output:
 	while again != 'n':
 		line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','location':''}
 		# input CAS
