@@ -39,7 +39,7 @@ with open(fileName,'a') as output:
 				#'https://cactus.nci.nih.gov/chemical/structure/555-55-5/names'
 				url='https://cactus.nci.nih.gov/chemical/structure/{0}/names'.format(CAS)
 				response = None
-				response=requests.get(url,timeout=5)
+				response=requests.get(url,timeout=30)
 				nameList=response.text.splitlines() # if the request times out, response.text will be undefined: then except
 
 				#nameList = cr.resolve(CAS,'names')
