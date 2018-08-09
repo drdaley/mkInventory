@@ -3,6 +3,7 @@ import cirpy as cr
 import os
 import mkInvDefs
 import datetime as dt
+import requests
 
 again = ''
 line = {'CAS':'','name':'','amount':'','units':'','comments':'','phase':'','location':''}
@@ -35,7 +36,11 @@ with open(fileName,'a') as output:
 			line['name'] = res
 		else:
 			try:
-				nameList = cr.resolve(CAS,'names')
+				#'https://cactus.nci.nih.gov/chemical/structure/555-55-5/names'
+				url='https://cactus.nci.nih.gov/chemical/structure/{0}/names'.format(CAS)
+				response=requests.get(url,timeout=30)
+				nameList=response.text.splitlines()
+				#nameList = cr.resolve(CAS,'names')
 				if len(nameList) == 1:
 					line['name'] = nameList
 				elif len(nameList) > 1:
